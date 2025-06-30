@@ -14,6 +14,7 @@ export default defineConfig({
   build: {
     target: 'esnext',
     minify: 'terser',
+    sourcemap: true,
     rollupOptions: {
       output: {
         manualChunks: {
@@ -26,8 +27,8 @@ export default defineConfig({
     },
     terserOptions: {
       compress: {
-        drop_console: true,
-        drop_debugger: true,
+        drop_console: false,
+        drop_debugger: false,
       },
     },
   },
