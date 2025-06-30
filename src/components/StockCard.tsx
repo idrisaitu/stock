@@ -1,6 +1,7 @@
 import React from 'react';
 import { TrendingUp, TrendingDown, DollarSign, BarChart3, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import { Stock } from '../types/stock';
+import { useAppContext } from '../context/AppContext';
 
 interface StockCardProps {
   stock: Stock;
@@ -8,6 +9,7 @@ interface StockCardProps {
 }
 
 export const StockCard: React.FC<StockCardProps> = ({ stock, onClick }) => {
+  const { currency } = useAppContext();
   const isPositive = stock.change >= 0;
   const changeColor = isPositive ? 'text-green-600' : 'text-red-600';
   const bgGradient = isPositive 
@@ -21,6 +23,15 @@ export const StockCard: React.FC<StockCardProps> = ({ stock, onClick }) => {
     if (num >= 1e3) return `${(num / 1e3).toFixed(1)}K`;
     return num.toString();
   };
+
+  const currencySymbols = {
+    USD: '$',
+    EUR: '€',
+    GBP: '£',
+    JPY: '¥'
+  };
+
+  const currencySymbol = currencySymbols[currency];
 
   return (
     <div 
@@ -46,7 +57,7 @@ export const StockCard: React.FC<StockCardProps> = ({ stock, onClick }) => {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <span className="text-3xl font-bold text-gray-900">
-            ${stock.price.toFixed(2)}
+            {currencySymbol}{stock.price.toFixed(2)}
           </span>
           <div className={`text-right ${changeColor}`}>
             <div className="flex items-center space-x-1 font-semibold text-lg">
@@ -55,7 +66,7 @@ export const StockCard: React.FC<StockCardProps> = ({ stock, onClick }) => {
               ) : (
                 <ArrowDownRight className="h-4 w-4" />
               )}
-              <span>{isPositive ? '+' : ''}${stock.change.toFixed(2)}</span>
+              <span>{isPositive ? '+' : ''}{currencySymbol}{Math.abs(stock.change).toFixed(2)}</span>
             </div>
             <div className="text-sm font-medium">
               ({isPositive ? '+' : ''}{stock.changePercent.toFixed(2)}%)
@@ -79,7 +90,7 @@ export const StockCard: React.FC<StockCardProps> = ({ stock, onClick }) => {
             </div>
             <div>
               <p className="text-xs text-gray-500 font-medium">Market Cap</p>
-              <p className="text-sm font-semibold text-gray-900">{formatNumber(stock.marketCap || 0)}</p>
+              <p className="text-sm font-semibold text-gray-900">{currencySymbol}{formatNumber(stock.marketCap || 0)}</p>
             </div>
           </div>
         </div>
@@ -87,11 +98,11 @@ export const StockCard: React.FC<StockCardProps> = ({ stock, onClick }) => {
         <div className="grid grid-cols-2 gap-4 pt-3 border-t border-gray-100">
           <div className="text-center p-2 bg-gray-50 rounded-lg">
             <p className="text-xs text-gray-500 font-medium">High</p>
-            <p className="text-sm font-semibold text-gray-900">${stock.high.toFixed(2)}</p>
+            <p className="text-sm font-semibold text-gray-900">{currencySymbol}{stock.high.toFixed(2)}</p>
           </div>
           <div className="text-center p-2 bg-gray-50 rounded-lg">
             <p className="text-xs text-gray-500 font-medium">Low</p>
-            <p className="text-sm font-semibold text-gray-900">${stock.low.toFixed(2)}</p>
+            <p className="text-sm font-semibold text-gray-900">{currencySymbol}{stock.low.toFixed(2)}</p>
           </div>
         </div>
       </div>
